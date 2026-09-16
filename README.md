@@ -25,9 +25,10 @@
 | 분석 형태 | Python 시계열 분석 (Jupyter Notebook) + Markdown 리포트 |
 | 데이터 | OECD 소비자물가지수, 음식 및 숙박(CP11)·식료품·에너지·전체 CPI, 월별 |
 | 분석 대상 | 6개국 × 120개월 (2015-01 ~ 2024-12), 외식 지표 720개 |
+| 추가 데이터 | 국제 유가·원달러 환율·세계 식료품 가격(FRED), 한국 최저임금(OECD) |
 | 핵심 흐름 | API 수집 → 결측·이상치 점검 → 시계열 분석 → 질문별 시각화 → 인사이트 리포트 |
 | 분석 기법 | 전년동월대비 변화율, 3개월 이동평균, 구간별 통계, 변동성(평균+2σ), 사건 전후 비교, 시차 상관 |
-| 결과물 | `REPORT.md`, 분석 그래프 7개, 분석 노트북, 수집 스크립트 |
+| 결과물 | `REPORT.md`, 분석 그래프 9개, 분석 노트북, 수집 스크립트 2개 |
 | 보너스 과제 | Streamlit 대시보드, STL 시계열 분해, 베이스라인 예측 |
 | 재현성 | 인증키 없는 공개 API, `requirements.txt`, 원본 데이터 포함 |
 | 배포 | GitHub Pages 정적 웹 대시보드 (https://qjskffj-code.github.io/codyssey_M1-1/) |
@@ -80,15 +81,20 @@ OECD API에서 6개국의 월별 물가지수를 수집한 뒤, 나라마다 다
    - STL 시계열 분해: 추세·계절성·잔차 분리
    - 베이스라인 예측: 2025년을 예측하고 실제 발표값과 비교
 
+6. **심화: 한국 원가 요인 검증**
+   - 요금 규제를 받지 않는 지표(국제 유가·세계 식료품 가격 × 환율)로 시차 재확인
+   - 최저임금 데이터로 인건비 가설을 검증하고, 뒷받침되지 않음을 리포트에 반영
+
 ## Tech / Tools
 
 | 영역 | 사용 기술 | 역할 |
 |---|---|---|
 | Language | Python 3.11.16 | 전체 수집·분석 구현 |
-| Data Source | OECD SDMX REST API | 국가별 월별 소비자물가지수 제공 |
+| Data Source | OECD SDMX REST API | 국가별 월별 소비자물가지수, 최저임금 제공 |
+| Data Source | FRED (세인트루이스 연준) | 국제 유가, 원/달러 환율, 세계 식료품 가격지수 |
 | HTTP Client | requests | API 요청과 CSV 응답 처리 |
 | Data Processing | pandas | 표 변환, 변화율·이동평균·구간 통계 계산 |
-| Visualization | matplotlib | 리포트용 그래프 7개 생성 |
+| Visualization | matplotlib | 리포트용 그래프 9개 생성 |
 | Time Series | statsmodels | STL 시계열 분해 |
 | Notebook | Jupyter | 분석 과정과 결과 기록 |
 | Dashboard | Streamlit, Altair | 조건별 탐색 대시보드 |
@@ -229,6 +235,21 @@ URL 쿼리로 처음 화면의 조건을 지정할 수 있어서, 아래 [대시
 - **STL 분해:** 6개국의 계절성 강도를 계산하고 한국(0.12)과 프랑스(0.95)를 비교
 - **베이스라인 예측:** 단순 / 계절 단순 / 추세 유지 3가지 방식으로 2025년을 예측하고, 이미 발표된 2025년 실제값으로 오차(MAE, MAPE) 평가
 
+## 7. 심화: 한국 원가 요인 분석
+
+```powershell
+python .\collect_cost_drivers.py
+```
+
+국내 에너지 지수(CP045)는 정부가 요금 인상 시점을 조절해 원가 압력을 제때 보여주지 못합니다.
+그래서 **요금 규제를 받지 않는 지표**를 따로 수집해 시차를 다시 확인했습니다.
+
+| 지표 | 출처 | 역할 |
+|---|---|---|
+| 브렌트유 × 원/달러 환율 | FRED | 음식점이 부담하는 수입 에너지 비용 |
+| IMF 세계 식료품 가격지수 × 환율 | FRED | 수입 식재료 원가 |
+| 한국 법정 최저임금(시급) | OECD | 리포트에서 가설로만 적었던 인건비 요인 검증 |
+
 ---
 
 # Key Findings
@@ -242,6 +263,8 @@ URL 쿼리로 처음 화면의 조건을 지정할 수 있어서, 아래 [대시
 | 3 | 유럽은 에너지 상승률이 외식 물가보다 4~7개월 앞섬. 한국은 외식 정점(2022-08)이 에너지 정점(2023-01)보다 먼저 | 유럽은 에너지 비용 전가가 보이지만, 한국 급등은 에너지 외 요인이 더 컸다 |
 | 4 | 이-하 전쟁 이후 12개월 동안 6개국 모두 상승률 둔화 | 이 데이터로는 전쟁 영향이 보이지 않는다 (더 큰 물가 둔화 흐름에 가려짐) |
 | 5 | 2025년 예측에서 "최근 12개월 기울기 유지"가 5개국 모두 가장 정확 (한국 MAPE 0.43%) | 급등기는 끝났지만 2025년에도 2024년의 상승 속도가 이어졌다 |
+| 6 | 한국: 원화 기준 유가·세계 식료품 가격이 외식 물가보다 **10개월 선행** (상관 0.66, 0.77). 국내 에너지 지수는 시차 0개월 | 한국에도 원가 전가 경로가 있었고, 규제 요금 지표가 그 신호를 늦게 보여준 것 |
+| 7 | 최저임금이 16.4% 오른 2018년 외식 상승률은 3.0%, 5.1% 오른 2022년은 7.6% (상관 −0.11) | 처음 세운 인건비 가설은 이 데이터로 뒷받침되지 않았다 |
 
 ---
 
@@ -291,7 +314,19 @@ URL 쿼리로 처음 화면의 조건을 지정할 수 있어서, 아래 [대시
   <img src="images/07_baseline_forecast.png" alt="2025년 베이스라인 예측과 실제값 비교" width="900">
 </p>
 
-## 08. 배포된 웹 대시보드 (GitHub Pages)
+## 08. 심화: 한국 원가 지표와 외식 물가
+
+<p align="center">
+  <img src="images/08_kor_cost_drivers.png" alt="한국 원가 지표와 외식 물가 상승률" width="900">
+</p>
+
+## 09. 심화: 최저임금과 외식 물가
+
+<p align="center">
+  <img src="images/09_kor_minimum_wage.png" alt="한국 최저임금 인상률과 외식 물가 상승률" width="900">
+</p>
+
+## 10. 배포된 웹 대시보드 (GitHub Pages)
 
 <p align="center">
   <img src="assets/images/코디세이_M1-1_웹대시보드_01_배포화면_260916.png" alt="GitHub Pages 웹 대시보드" width="900">
@@ -367,6 +402,8 @@ M1-1/
 │   ├── raw/
 │   │   ├── oecd_coicop1999.csv
 │   │   └── oecd_coicop2018.csv
+│   ├── cost_drivers_monthly.csv
+│   ├── kor_minimum_wage.csv
 │   └── cpi_monthly.csv
 ├── images/
 │   ├── 01_index_trend.png
@@ -375,12 +412,15 @@ M1-1/
 │   ├── 04_event_before_after.png
 │   ├── 05_peak_timing.png
 │   ├── 06_stl_decomposition.png
-│   └── 07_baseline_forecast.png
+│   ├── 07_baseline_forecast.png
+│   ├── 08_kor_cost_drivers.png
+│   └── 09_kor_minimum_wage.png
 ├── docs/
 │   └── index.html            GitHub Pages로 배포되는 정적 대시보드
 ├── .gitignore
 ├── analysis.ipynb
 ├── build_static_dashboard.py
+├── collect_cost_drivers.py
 ├── collect_data.py
 ├── dashboard.py
 ├── README.md
@@ -519,6 +559,8 @@ python .uild_static_dashboard.py
 | 대시보드 데이터 부족 안내 | 기간 끝 2026-08, 프랑스 포함 | "기간 끝까지 데이터가 없는 나라" 안내 표시 | PASS |
 | 웹 대시보드 필터 | 항목=에너지, 지표=지수, 시작 월 100 맞추기 | 모든 나라가 100에서 시작하도록 다시 계산 | PASS |
 | 배포 확인 | GitHub Pages 주소 접속 | HTTP 200, 그래프 정상 표시 | PASS |
+| 최저임금 수집값 | OECD 값과 알려진 인상률 대조 | 2018년 +16.4%, 2019년 +10.9%로 일치 | PASS |
+| 기저효과 점검 | 유가 상승률 정점 2021-04 (+222%) | 2020년 폭락 탓임을 확인하고 가격 수준 정점을 병기 | PASS |
 
 ---
 
@@ -591,6 +633,7 @@ python .uild_static_dashboard.py
 ## Limitations & Future Work
 
 - CP11은 외식과 숙박을 합친 지수입니다. KOSIS의 한국 "외식" 지수(숙박 제외)로 한국 결과를 교차 검증할 수 있습니다.
+- 원가 지표는 국제 유가·세계 식료품 가격을 환율로 환산한 대리 지표입니다. 한국은행 수입물가지수로 반복 검증하면 더 정확합니다.
 - 사건 전후 비교와 시차 상관은 인과관계를 증명하지 않습니다. 금리, 환율, 임금, 방역 정책 같은 변수를 함께 넣은 분석이 필요합니다.
 - 전년동월대비 상승률은 이웃한 달끼리 값이 비슷해 상관계수가 높게 나올 수 있습니다.
 - 예측은 2025년 한 해로만 평가했고 오차 범위를 계산하지 않았습니다. 계절성과 추세를 함께 쓰는 모델(예: SARIMA, ETS)과 여러 해 교차 검증을 추가할 수 있습니다.
@@ -608,10 +651,10 @@ python .uild_static_dashboard.py
 |---|---|
 | 분석 리포트 | `REPORT.md` |
 | 분석 노트북 | `analysis.ipynb` |
-| 데이터 수집 스크립트 | `collect_data.py` |
+| 데이터 수집 스크립트 | `collect_data.py`, `collect_cost_drivers.py` |
 | 원본 데이터 | `data/raw/oecd_coicop1999.csv`, `data/raw/oecd_coicop2018.csv` |
 | 분석용 데이터 | `data/cpi_monthly.csv` |
-| 분석 그래프 | `images/01_index_trend.png` ~ `images/07_baseline_forecast.png` |
+| 분석 그래프 | `images/01_index_trend.png` ~ `images/09_kor_minimum_wage.png` |
 | 대시보드 (로컬 실행) | `dashboard.py` |
 | 웹 대시보드 (배포) | `build_static_dashboard.py` → `docs/index.html` |
 | 대시보드 스크린샷 | `assets/images/코디세이_M1-1_대시보드_*.png` |
