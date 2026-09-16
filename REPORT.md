@@ -178,7 +178,9 @@
 
 ### 7-1. 분석 결과 서비스화: Streamlit 대시보드
 
-- **제출 방식:** (3) 대시보드 스크린샷 세트 + 필터/기간 변경 시나리오 설명 → [README의 대시보드 시나리오](README.md#dashboard-scenarios)
+- **제출 방식 (1) 배포 URL:** **https://qjskffj-code.github.io/codyssey_M1-1/** (GitHub Pages 정적 대시보드)
+- **제출 방식 (3) 스크린샷 세트:** [README의 대시보드 시나리오](README.md#dashboard-scenarios)
+- **대시보드가 둘인 이유:** 로컬 실행용은 Streamlit(`dashboard.py`), 배포용은 서버가 필요 없는 정적 HTML(`build_static_dashboard.py` → `docs/index.html`)로 만들었다. 둘 다 같은 `data/cpi_monthly.csv`를 사용한다.
 - **실행:** `streamlit run dashboard.py` → http://localhost:8501
 - **바꿀 수 있는 조건:** 나라(복수 선택), 항목(음식 및 숙박 / 식료품 / 에너지 / 전체 CPI), 지표(지수 / 전년동월대비 / 3개월 이동평균), 기간(2015-01 ~ 2026-08), 시작 월=100 재지수화, 사건 표시, 전후 비교할 사건
 - **화면 구성:** 기간 누적 상승률 카드 → 추이 그래프(마우스를 올리면 월별 값 표시) → 사건 전후 12개월 막대그래프 → 기간 요약 표

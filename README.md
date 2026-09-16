@@ -2,6 +2,8 @@
 
 > **Codyssey M1-1 · AI 데이터 분석: 데이터 기반 트렌드 분석**  
 > OECD 소비자물가지수로 한국·미국·일본·영국·독일·프랑스의 외식 물가를 2015~2024년 월별로 비교하고, 코로나19와 두 전쟁(러시아-우크라이나, 이스라엘-하마스) 전후의 변화를 분석한 시계열 분석 프로젝트입니다.
+>
+> **🔗 웹 대시보드:** https://qjskffj-code.github.io/codyssey_M1-1/
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.11.16-3776AB?style=flat-square&logo=python&logoColor=white">
@@ -10,6 +12,7 @@
   <img alt="statsmodels" src="https://img.shields.io/badge/statsmodels-STL-4051B5?style=flat-square">
   <img alt="Streamlit" src="https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=flat-square&logo=streamlit&logoColor=white">
   <img alt="OECD" src="https://img.shields.io/badge/Data-OECD_SDMX_API-0B5394?style=flat-square">
+  <a href="https://qjskffj-code.github.io/codyssey_M1-1/"><img alt="Live" src="https://img.shields.io/badge/Live-GitHub_Pages-222222?style=flat-square&logo=githubpages&logoColor=white"></a>
 </p>
 
 ---
@@ -27,6 +30,7 @@
 | 결과물 | `REPORT.md`, 분석 그래프 7개, 분석 노트북, 수집 스크립트 |
 | 보너스 과제 | Streamlit 대시보드, STL 시계열 분해, 베이스라인 예측 |
 | 재현성 | 인증키 없는 공개 API, `requirements.txt`, 원본 데이터 포함 |
+| 배포 | GitHub Pages 정적 웹 대시보드 (https://qjskffj-code.github.io/codyssey_M1-1/) |
 
 ### 바로가기
 
@@ -218,6 +222,8 @@ streamlit run .\dashboard.py
 
 URL 쿼리로 처음 화면의 조건을 지정할 수 있어서, 아래 [대시보드 시나리오](#dashboard-scenarios)를 같은 화면으로 다시 열어볼 수 있습니다.
 
+배포용으로는 같은 데이터를 쓰는 **정적 웹 대시보드**를 따로 만들어 GitHub Pages에 올렸습니다. 서버가 없어 잠들지 않고 바로 열립니다. → https://qjskffj-code.github.io/codyssey_M1-1/
+
 ## 6. 보너스: 시계열 분해와 예측
 
 - **STL 분해:** 6개국의 계절성 강도를 계산하고 한국(0.12)과 프랑스(0.95)를 비교
@@ -284,6 +290,14 @@ URL 쿼리로 처음 화면의 조건을 지정할 수 있어서, 아래 [대시
 <p align="center">
   <img src="images/07_baseline_forecast.png" alt="2025년 베이스라인 예측과 실제값 비교" width="900">
 </p>
+
+## 08. 배포된 웹 대시보드 (GitHub Pages)
+
+<p align="center">
+  <img src="assets/images/코디세이_M1-1_웹대시보드_01_배포화면_260916.png" alt="GitHub Pages 웹 대시보드" width="900">
+</p>
+
+> 직접 열어 보기: https://qjskffj-code.github.io/codyssey_M1-1/
 
 ## Dashboard Scenarios
 
@@ -362,8 +376,11 @@ M1-1/
 │   ├── 05_peak_timing.png
 │   ├── 06_stl_decomposition.png
 │   └── 07_baseline_forecast.png
+├── docs/
+│   └── index.html            GitHub Pages로 배포되는 정적 대시보드
 ├── .gitignore
 ├── analysis.ipynb
+├── build_static_dashboard.py
 ├── collect_data.py
 ├── dashboard.py
 ├── README.md
@@ -448,15 +465,17 @@ streamlit run .\dashboard.py
 
 브라우저에서 http://localhost:8501 을 엽니다.
 
-## 7. (선택) Streamlit Cloud 배포
+## 7. 웹 대시보드 (GitHub Pages)
 
-1. https://share.streamlit.io 에 GitHub 계정으로 로그인합니다.
-2. **Create app → Deploy a public app from GitHub**을 선택합니다.
-3. 저장소 `qjskffj-code/codyssey_M1-1`, 브랜치 `main`, 파일 경로 `dashboard.py`를 지정합니다.
-4. Advanced settings에서 Python 3.11 또는 3.12를 선택합니다.
-5. Deploy를 누르면 `requirements.txt`의 패키지 3개만 설치하고 앱을 실행합니다.
+배포 주소: **https://qjskffj-code.github.io/codyssey_M1-1/**
 
-> 분석용 패키지(jupyter, matplotlib, statsmodels)는 `requirements-analysis.txt`로 분리해서, 배포 빌드가 가볍고 빠르게 끝나도록 했습니다.
+데이터를 새로 받은 뒤 배포본을 갱신하려면 다시 생성하고 커밋합니다.
+
+```powershell
+python .uild_static_dashboard.py
+```
+
+`docs/index.html` 한 파일에 데이터가 들어 있어 서버가 필요 없습니다. GitHub Pages는 `main` 브랜치의 `/docs` 폴더를 사용합니다.
 
 ## 8. 결과 확인
 
@@ -498,6 +517,8 @@ streamlit run .\dashboard.py
 | 예측 평가 분리 | 2025년 데이터를 학습에 사용하지 않음 | 2025년 실제값으로만 오차 계산 | PASS |
 | 대시보드 실행 | 기본 조건으로 접속 | 브라우저 콘솔 에러 없음 | PASS |
 | 대시보드 데이터 부족 안내 | 기간 끝 2026-08, 프랑스 포함 | "기간 끝까지 데이터가 없는 나라" 안내 표시 | PASS |
+| 웹 대시보드 필터 | 항목=에너지, 지표=지수, 시작 월 100 맞추기 | 모든 나라가 100에서 시작하도록 다시 계산 | PASS |
+| 배포 확인 | GitHub Pages 주소 접속 | HTTP 200, 그래프 정상 표시 | PASS |
 
 ---
 
@@ -535,7 +556,7 @@ streamlit run .\dashboard.py
 - [x] 제출 방식 (3) 대시보드 스크린샷 세트 + 필터/기간 변경 시나리오 설명
 - [x] (A) 시계열 분해: 추세/계절성 분리 및 해석
 - [x] (B) 간단 예측: 베이스라인 방식 예측, 가정/한계 설명
-- [ ] 대시보드 배포 URL
+- [x] 대시보드 배포 URL: https://qjskffj-code.github.io/codyssey_M1-1/
 
 ---
 
@@ -573,7 +594,7 @@ streamlit run .\dashboard.py
 - 사건 전후 비교와 시차 상관은 인과관계를 증명하지 않습니다. 금리, 환율, 임금, 방역 정책 같은 변수를 함께 넣은 분석이 필요합니다.
 - 전년동월대비 상승률은 이웃한 달끼리 값이 비슷해 상관계수가 높게 나올 수 있습니다.
 - 예측은 2025년 한 해로만 평가했고 오차 범위를 계산하지 않았습니다. 계절성과 추세를 함께 쓰는 모델(예: SARIMA, ETS)과 여러 해 교차 검증을 추가할 수 있습니다.
-- 대시보드는 로컬 실행만 지원합니다. Streamlit Community Cloud에 배포하면 URL로 공유할 수 있습니다.
+- 배포한 정적 대시보드는 브라우저에서만 계산하므로, 데이터가 커지면 페이지 용량(현재 약 365KB)이 함께 커집니다. 데이터를 별도 파일로 분리해 불러오는 방식이 필요할 수 있습니다.
 
 ## 한 줄 회고
 
@@ -591,7 +612,8 @@ streamlit run .\dashboard.py
 | 원본 데이터 | `data/raw/oecd_coicop1999.csv`, `data/raw/oecd_coicop2018.csv` |
 | 분석용 데이터 | `data/cpi_monthly.csv` |
 | 분석 그래프 | `images/01_index_trend.png` ~ `images/07_baseline_forecast.png` |
-| 대시보드 | `dashboard.py` |
+| 대시보드 (로컬 실행) | `dashboard.py` |
+| 웹 대시보드 (배포) | `build_static_dashboard.py` → `docs/index.html` |
 | 대시보드 스크린샷 | `assets/images/코디세이_M1-1_대시보드_*.png` |
 | 의존성 목록 | `requirements.txt` (대시보드), `requirements-analysis.txt` (수집·분석) |
 | 프로젝트 문서 | `README.md` |
