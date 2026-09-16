@@ -368,6 +368,7 @@ M1-1/
 ├── dashboard.py
 ├── README.md
 ├── REPORT.md
+├── requirements-analysis.txt
 └── requirements.txt
 ```
 
@@ -403,8 +404,16 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 
 ## 3. 패키지 설치
 
+대시보드만 실행하려면 다음을 설치합니다.
+
 ```powershell
 python -m pip install -r requirements.txt
+```
+
+데이터 수집과 분석 노트북까지 실행하려면 다음을 설치합니다.
+
+```powershell
+python -m pip install -r requirements-analysis.txt
 ```
 
 ## 4. 데이터 수집
@@ -439,7 +448,17 @@ streamlit run .\dashboard.py
 
 브라우저에서 http://localhost:8501 을 엽니다.
 
-## 7. 결과 확인
+## 7. (선택) Streamlit Cloud 배포
+
+1. https://share.streamlit.io 에 GitHub 계정으로 로그인합니다.
+2. **Create app → Deploy a public app from GitHub**을 선택합니다.
+3. 저장소 `qjskffj-code/codyssey_M1-1`, 브랜치 `main`, 파일 경로 `dashboard.py`를 지정합니다.
+4. Advanced settings에서 Python 3.11 또는 3.12를 선택합니다.
+5. Deploy를 누르면 `requirements.txt`의 패키지 3개만 설치하고 앱을 실행합니다.
+
+> 분석용 패키지(jupyter, matplotlib, statsmodels)는 `requirements-analysis.txt`로 분리해서, 배포 빌드가 가볍고 빠르게 끝나도록 했습니다.
+
+## 8. 결과 확인
 
 - `images/` 폴더: 분석 그래프 7개
 - `REPORT.md`: 분석 리포트
@@ -574,5 +593,5 @@ streamlit run .\dashboard.py
 | 분석 그래프 | `images/01_index_trend.png` ~ `images/07_baseline_forecast.png` |
 | 대시보드 | `dashboard.py` |
 | 대시보드 스크린샷 | `assets/images/코디세이_M1-1_대시보드_*.png` |
-| 의존성 목록 | `requirements.txt` |
+| 의존성 목록 | `requirements.txt` (대시보드), `requirements-analysis.txt` (수집·분석) |
 | 프로젝트 문서 | `README.md` |

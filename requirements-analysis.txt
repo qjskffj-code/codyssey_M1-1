@@ -1,0 +1,6 @@
+# 데이터 수집과 분석 노트북 실행에 필요한 패키지
+-r requirements.txt
+requests==2.34.2
+matplotlib==3.11.2
+statsmodels==0.15.0
+jupyter==1.1.1

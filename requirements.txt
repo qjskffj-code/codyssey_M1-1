@@ -1,7 +1,5 @@
-pandas==3.0.5
-matplotlib==3.11.2
-requests==2.34.2
-statsmodels==0.15.0
-jupyter==1.1.1
+# 대시보드(dashboard.py) 실행에 필요한 최소 패키지
+# Streamlit Community Cloud가 이 파일을 보고 설치한다.
 streamlit==1.63.0
+pandas==3.0.5
 altair==6.3.0
